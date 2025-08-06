@@ -408,7 +408,7 @@
     let loteAtual = null;
 
 async function carregarJSON() {
-  const resposta = await fetch('dados-lotes.json');
+  const resposta = await fetch('Lotes.json');
   const dados = await resposta.json();
 
   dadosLotes = {};
@@ -523,10 +523,11 @@ window.onload = () => {
       resumo.innerHTML = texto;
     }
 
-    window.onload = carregarExcelAutomaticamente;
+    window.onload = carregarJSON();
   </script>
 
 </body>
 </html>
+
 
 
