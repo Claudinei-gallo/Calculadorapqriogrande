@@ -407,39 +407,34 @@
     let loteSelecionadoId = null;
     let loteAtual = null;
 
-    async function carregarExcelAutomaticamente() {
-      try {
-        const response = await fetch('lotes.xlsx');
-        const data = await response.arrayBuffer();
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(sheet);
+async function carregarJSON() {
+  const resposta = await fetch('dados-lotes.json');
+  const dados = await resposta.json();
 
-        dadosLotes = {};
+  dadosLotes = {};
 
-        json.forEach(lote => {
-          const id = lote.ID.trim(); // Ex: _1_A_01
-          dadosLotes[id] = {
-            nome: lote.Nome,
-            area: lote.Area,
-            valor: parseFloat(lote.Valor),
-            vendido: lote.Vendido === true || lote.Vendido === "TRUE"
-          };
-        });
+  dados.forEach((linha) => {
+    const id = linha.ID;
+    dadosLotes[id] = {
+      nome: linha.Nome,
+      area: linha.Area + " m²",
+      valor: Number(linha.Valor),
+      vendido: linha.Vendido === true || linha.Vendido === "TRUE",
+    };
+  });
 
-        Object.keys(dadosLotes).forEach(id => {
-          const lote = dadosLotes[id];
-          const elem = document.getElementById("lote-" + id);
-          if (elem && lote.vendido) {
-            elem.setAttribute("fill", "#ff000088");
-          }
-        });
-
-        console.log("Excel carregado com sucesso.");
-      } catch (error) {
-        console.error("Erro ao carregar Excel:", error);
-      }
+  Object.keys(dadosLotes).forEach(id => {
+    const lote = dadosLotes[id];
+    const elem = document.getElementById("lote-" + id);
+    if (elem && lote.vendido) {
+      elem.setAttribute("fill", "#ff000088");
     }
+  });
+}
+
+window.onload = () => {
+  carregarJSON();
+}
 
     function selecionarLote(id) {
       if (!dadosLotes[id]) return;
@@ -533,4 +528,5 @@
 
 </body>
 </html>
+
 
